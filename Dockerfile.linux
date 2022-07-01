@@ -9,7 +9,7 @@ WORKDIR /source/dotnetcore-docs-hello-world
 RUN dotnet publish -c release -o /app 
 
 # final stage/image
-# We're using a tag that is explicitly a Windows container
+# We're using a tag that is explicitly a Linux container
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build /app ./
