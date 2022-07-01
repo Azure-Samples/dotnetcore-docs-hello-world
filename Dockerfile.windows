@@ -18,6 +18,7 @@ COPY --from=build /app ./
 
 # Expose port 80
 # This is important in order for the Azure App Service to pick up the app
+ENV PORT 80
 EXPOSE 80
 
 # Start the app

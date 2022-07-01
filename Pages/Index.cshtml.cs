@@ -7,7 +7,7 @@ namespace dotnetcoresample.Pages;
 public class IndexModel : PageModel
 {
 
-    public string OSVersion { get; set; }
+    public string OSVersion { get { return RuntimeInformation.OSDescription; }  }
     
     private readonly ILogger<IndexModel> _logger;
 
@@ -17,7 +17,6 @@ public class IndexModel : PageModel
     }
 
     public void OnGet()
-    {
-        this.OSVersion = RuntimeInformation.OSDescription;
+    {        
     }
 }
