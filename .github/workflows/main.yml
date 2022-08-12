@@ -37,10 +37,10 @@ on:
     # Optional authentication token used with `source-url`.
     nuget_auth_token: # optional
 
-  - name: Setup DotNet 2.2.402 Environment
+  - name: Setup DotNet 6.0.400 Environment
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.402
+        dotnet-version: 6.0.400
 
 env:
   AZURE_FUNCTIONAPP_NAME: FunctionHttpTrigger001   # set this to your application's name
