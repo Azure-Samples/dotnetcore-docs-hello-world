@@ -39,4 +39,4 @@ jobs:
           app-name: 'FunctionHttpTrigger001'
           slot-name: 'Production'
           package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4BDBAE4E3B284156B37C623883A4DA35 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6D13377FE8CD48FA81E3DA66332AF128 }}
