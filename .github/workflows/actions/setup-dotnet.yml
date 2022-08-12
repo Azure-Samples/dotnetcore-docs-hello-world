@@ -2,7 +2,7 @@
  - name: Setup DotNet 6 Environment
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.402
+        dotnet-version: 6.0
         env:
       AZURE_FUNCTIONAPP_PACKAGE_PATH: '.' # set this to the path to your web app project, defaults to the repository root
 
@@ -20,7 +20,7 @@ on:
 env:
   AZURE_FUNCTIONAPP_NAME: FunctionHttpTrigger001  # set this to your application's name
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'dotnetcore-docs-hello-world/.github/workflows/actions/setup-dotnet.yml'    # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '6'              # set this to the dotnet version to use
+  DOTNET_VERSION: '6.0'              # set this to the dotnet version to use
 
 jobs:
   build-and-deploy:
@@ -54,7 +54,7 @@ on:
 env:
   AZURE_FUNCTIONAPP_NAME: FunctionHttpTrigger001  # set this to your application's name
   AZURE_FUNCTIONAPP_PACKAGE_PATH: 'dotnetcore-docs-hello-world/.github/workflows/actions/setup-dotnet.yml'    # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '6'              # set this to the dotnet version to use
+  DOTNET_VERSION: '6.0'              # set this to the dotnet version to use
 
 jobs:
   build-and-deploy:
