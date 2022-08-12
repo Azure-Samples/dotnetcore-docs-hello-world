@@ -1,5 +1,5 @@
 
- - name: Setup DotNet 2.2.402 Environment
+ - name: Setup DotNet 6 Environment
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.402
