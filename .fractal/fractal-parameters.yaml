@@ -1,0 +1,4 @@
+environments:
+  - name: development
+    parameters:
+      IMAGE: "fractaldemoacr.azurecr.io/91b7f870-d0e7-4a8f-8243-fdf90c380200/custom-workloads/sample-microservice:latest"

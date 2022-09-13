@@ -6,8 +6,8 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0-nanoserver-ltsc2022 AS build
 WORKDIR /source
 
 # Copy everything in this project and build app
-COPY . ./dotnetcore-docs-hello-world/
-WORKDIR /source/dotnetcore-docs-hello-world
+COPY . ./SampleMicroservice/
+WORKDIR /source/SampleMicroservice
 RUN dotnet publish -c release -o /app 
 
 # final stage/image
@@ -17,10 +17,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0.6-nanoserver-ltsc2022
 WORKDIR /app
 COPY --from=build /app ./
 
-# Expose port 80
+# Expose port 8082
 # This is important in order for the Azure App Service to pick up the app
-ENV PORT 80
-EXPOSE 80
+# ENV PORT 8082
+ENV ASPNETCORE_URLS "http://+:8082"
+EXPOSE 8082
 
 # Start the app
-ENTRYPOINT ["dotnet", "dotnetcoresample.dll"]
+ENTRYPOINT ["dotnet", "SampleMicroservice.dll"]
