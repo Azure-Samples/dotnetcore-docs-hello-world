@@ -3,7 +3,8 @@
 
 name: Build and deploy ASP.Net Core app to Azure Web App - workshoptraining
 
-push:
+on:
+ push:
     branches:
       - master
   workflow_dispatch:
@@ -38,7 +39,7 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.workshoptraining.azurewebsites.net }}
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - name: Download artifact from build job
