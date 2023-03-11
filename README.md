@@ -26,7 +26,7 @@ docker push <your_registry_name>.azurecr.io/dotnetcore-docs-hello-world-windows:
 
 ### Publish the Linux image to your Registry
 
-To build the Windows image locally and publish to ACR, run the following command:
+To build the Linux image locally and publish to ACR, run the following command:
 
 ```docker
 docker build -f Dockerfile.linux -t dotnetcore-docs-hello-world-linux . 
