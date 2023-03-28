@@ -12,7 +12,8 @@ RUN dotnet publish -c release -o /app
 
 # final stage/image
 # We're using a tag that is explicitly a Windows container
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.6-nanoserver-ltsc2022
+# see image lists: https://mcr.microsoft.com/en-us/product/dotnet/aspnet/tags
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.15-nanoserver-ltsc2022
 
 WORKDIR /app
 COPY --from=build /app ./
