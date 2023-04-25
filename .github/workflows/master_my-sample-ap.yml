@@ -19,9 +19,12 @@ jobs:
       - name: Setup MSBuild path
         uses: microsoft/setup-msbuild@v1.0.2
 
-      - name: Setup NuGet
+      - name: Install Nuget
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: ${{ env.NUGET_VERSION}}
         uses: NuGet/setup-nuget@v1.0.5
-
+        
       - name: Restore NuGet packages
         run: nuget restore
 
