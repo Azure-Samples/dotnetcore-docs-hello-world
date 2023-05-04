@@ -1,7 +1,7 @@
 # Start with the .NET SDK for building the app
 # Using an explicit Windows Server tag
 # We are using Windows Nanoserver, a headless server for hosting apps with IIS
-FROM mcr.microsoft.com/dotnet/sdk:6.0-nanoserver-ltsc2022 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0-nanoserver-ltsc2022 AS build
 # Work within a folder named `/source`
 WORKDIR /source
 
@@ -12,7 +12,7 @@ RUN dotnet publish -c release -o /app
 
 # final stage/image
 # We're using a tag that is explicitly a Windows container
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.6-nanoserver-ltsc2022
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-nanoserver-ltsc2022
 
 WORKDIR /app
 COPY --from=build /app ./
