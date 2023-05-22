@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'testapppha'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F6A536197D7C47439309132EFE5718AA }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0C1AF295259749A69B2E41A7AF8C8195 }}
           package: .
