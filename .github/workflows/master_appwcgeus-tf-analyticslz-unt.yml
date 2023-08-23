@@ -3,6 +3,7 @@
 
 name: Build and deploy ASP.Net Core app to Azure Web App - appwCGeus-TF-AnalyticsLZ-UNT
 
+
 on:
   push:
     branches:
