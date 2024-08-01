@@ -5,34 +5,15 @@
 trigger:
 - main
 
+steps:
 
-resources:
-- repo: self
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'DockerSC'
+      repository: 'advikbalan2709/helloworld'
+      command: 'build'
+      Dockerfile: '**/Dockerfile.linux'
+      tags: |
+        $(Build.BuildId)
+        
 
-variables:
-  tag: '$(Build.BuildId)'
-  
-
-stages:
-- stage: Build
-  displayName: Build and Push image to Docker Hub
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: ubuntu-latest
-    steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        command: build
-        dockerfile: '$(Build.SourcesDirectory)/Dockerfile.linux'
-        tags: |
-          $(tag)
-
-    - task: Docker@2
-      displayName: Push an image
-      inputs:
-        containerRegistry: 'DockerSC'
-        repository: 'advikbalan2709/helloworld'
-        command: 'push'
