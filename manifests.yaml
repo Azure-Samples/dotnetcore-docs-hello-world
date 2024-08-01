@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+  labels:
+    app: helloworld
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+      - name: helloworld
+        image: advikbalan2709/helloworld:latest  # Replace 'latest' with your specific tag if needed
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-service
+  labels:
+    app: helloworld
+spec:
+  type: LoadBalancer
+  selector:
+    app: helloworld
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helloworld-config
+data:
+  CONFIG_KEY: configValue
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: helloworld-secret
+type: Opaque
+data:
+  SECRET_KEY: c2VjcmV0VmFsdWU=  # base64 encoded value
