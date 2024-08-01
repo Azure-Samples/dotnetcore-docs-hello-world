@@ -10,9 +10,9 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'b90996a6-70ca-4548-8042-317db984ad3c'
+  dockerRegistryServiceConnection: 'DockerSC'
   imageRepository: 'helloworld'
-  containerRegistry: 'm3pcontaineraksimages.azurecr.io'
+  #containerRegistry: 'm3pcontaineraksimages.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile.linux'
   tag: '$(Build.BuildId)'
 
