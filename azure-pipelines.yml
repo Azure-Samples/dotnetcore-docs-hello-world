@@ -5,21 +5,34 @@
 trigger:
 - master
 
-steps:
+stages:
+- stage: Build 
+  displayName: 'Build Stage'
+  jobs:
+  - job: BuildJob
+    displayName: 'Build Docker Locally'
+    steps:
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'DockerSC'
+          repository: 'advikbalan2709/helloworld'
+          command: 'build'
+          Dockerfile: '**/Dockerfile.linux'
+          tags: |
+            $(Build.BuildId)
 
-  - task: Docker@2
-    inputs:
-      containerRegistry: 'DockerSC'
-      repository: 'advikbalan2709/helloworld'
-      command: 'build'
-      Dockerfile: '**/Dockerfile.linux'
-      tags: |
-        $(Build.BuildId)
-  
-  - task: Docker@2
-    inputs:
-      containerRegistry: 'DockerSC'
-      repository: 'advikbalan2709/helloworld'
-      command: 'push'
+- stage: Push 
+  displayName: 'Push Stage'
+  jobs:
+  - job: PushJob
+    displayName: 'Push to Docker Hub'
+    steps:
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'DockerSC'
+          repository: 'advikbalan2709/helloworld'
+          command: 'push'
+
+
         
 
