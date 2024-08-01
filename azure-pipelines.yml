@@ -32,5 +32,24 @@ stages:
             $(Build.BuildId)
 
 
+
+- stage: Deploy
+  displayName: 'Deploy to AKS'
+  dependsOn:[build]
+    jobs:
+      - job: DeployJob
         
+        steps:
+        - task: KubernetesManifest@1
+          inputs:
+            action: 'deploy'
+            connectionType: 'azureResourceManager'
+            azureSubscriptionConnection: 'AzureSC'
+            azureResourceGroup: 'aks'
+            kubernetesCluster: 'aks-demo-cluster'
+            namespace: 'dev'
+            strategy: 'canary'
+            percentage: '50'
+            manifests: '*'
+          
 
