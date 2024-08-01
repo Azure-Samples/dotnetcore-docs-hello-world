@@ -32,6 +32,8 @@ stages:
           containerRegistry: 'DockerSC'
           repository: 'advikbalan2709/helloworld'
           command: 'push'
+          tags: |
+            $(Build.BuildId)
 
 
         
