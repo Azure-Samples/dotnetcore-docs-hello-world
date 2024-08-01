@@ -35,21 +35,20 @@ stages:
 
 - stage: Deploy
   displayName: 'Deploy to AKS'
-  dependsOn:[build]
-    jobs:
-      - job: DeployJob
-        
-        steps:
-        - task: KubernetesManifest@1
-          inputs:
-            action: 'deploy'
-            connectionType: 'azureResourceManager'
-            azureSubscriptionConnection: 'AzureSC'
-            azureResourceGroup: 'aks'
-            kubernetesCluster: 'aks-demo-cluster'
-            namespace: 'dev'
-            strategy: 'canary'
-            percentage: '50'
-            manifests: '*'
-          
-
+  dependsOn: Build  # Ensure this stage waits for the Build stage to complete
+  jobs:
+  - job: DeployJob
+    displayName: 'Deploy to AKS'
+    steps:
+      - task: KubernetesManifest@1
+        displayName: 'Deploy to AKS using Canary Strategy'
+        inputs:
+          action: 'deploy'
+          connectionType: 'Azure Resource Manager'
+          azureSubscription: 'AzureSC'  # Service connection name for Azure subscription
+          azureResourceGroup: 'aks'
+          kubernetesCluster: 'aks-demo-cluster'
+          namespace: 'dev'
+          strategy: 'canary'  # Deployment strategy
+          percentage: '50'  # Percentage for canary deployment
+          manifests: 'manifests/*'  # Path to Kubernetes manifests
