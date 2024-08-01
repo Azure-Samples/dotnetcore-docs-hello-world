@@ -35,20 +35,29 @@ stages:
 
 - stage: Deploy
   displayName: 'Deploy to AKS'
-  dependsOn: Build  # Ensure this stage waits for the Build stage to complete
+  dependsOn: Build
   jobs:
   - job: DeployJob
     displayName: 'Deploy to AKS'
+    variables:
+      BUILD_ID: $(Build.BuildId)  # Pass the build ID as a variable
     steps:
+      - task: Bash@3
+        displayName: 'Update Deployment Manifest with Build ID'
+        inputs:
+          targetType: 'inline'
+          script: |
+            sed -i 's/BUILD_ID_PLACEHOLDER/$(BUILD_ID)/g' manifests/deployment.yaml
+
       - task: KubernetesManifest@1
         displayName: 'Deploy to AKS using Canary Strategy'
         inputs:
           action: 'deploy'
           connectionType: 'Azure Resource Manager'
-          azureSubscription: 'AzureSC'  # Service connection name for Azure subscription
+          azureSubscription: 'AzureSC'
           azureResourceGroup: 'aks'
           kubernetesCluster: 'aks-demo-cluster'
           namespace: 'dev'
-          strategy: 'canary'  # Deployment strategy
-          percentage: '50'  # Percentage for canary deployment
-          manifests: 'manifests/*'  # Path to Kubernetes manifests
+          strategy: 'canary'
+          percentage: '50'
+          manifests: '/manifests.yaml'
