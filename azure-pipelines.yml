@@ -7,12 +7,13 @@ trigger:
 
 stages:
 - stage: Build 
-  displayName: 'Build Stage'
+  displayName: 'Docker Build/Push Stage'
   jobs:
   - job: BuildJob
-    displayName: 'Build Docker Locally'
+    
     steps:
       - task: Docker@2
+        displayName: 'Docker Build'
         inputs:
           containerRegistry: 'DockerSC'
           repository: 'advikbalan2709/helloworld'
@@ -21,13 +22,8 @@ stages:
           tags: |
             $(Build.BuildId)
 
-- stage: Push 
-  displayName: 'Push Stage'
-  jobs:
-  - job: PushJob
-    displayName: 'Push to Docker Hub'
-    steps:
       - task: Docker@2
+        displayName: 'Docker Push'
         inputs:
           containerRegistry: 'DockerSC'
           repository: 'advikbalan2709/helloworld'
