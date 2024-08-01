@@ -47,7 +47,7 @@ stages:
         inputs:
           targetType: 'inline'
           script: |
-            sed -i 's/BUILD_ID_PLACEHOLDER/$(BUILD_ID)/g' /manifests.yaml
+            sed -i 's/BUILD_ID_PLACEHOLDER/$(BUILD_ID)/g' **/manifests.yaml
 
       - task: KubernetesManifest@1
         displayName: 'Deploy to AKS using Canary Strategy'
