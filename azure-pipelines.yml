@@ -41,6 +41,7 @@ stages:
     displayName: 'Deploy to AKS'
     variables:
       BUILD_ID: $(Build.BuildId)  # Pass the build ID as a variable
+      deploymentPath: 'manifest.yaml'
     steps:
       - task: Bash@3
         displayName: 'Update Deployment Manifest with Build ID'
