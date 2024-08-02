@@ -78,3 +78,17 @@ stages:
           strategy: 'canary'
           percentage: '50'
           manifests: '$(deploymentPath)'
+      
+      - task: KubernetesManifest@1
+        displayName: 'Deploy to AKS using Canary Strategy'
+        inputs:
+          action: 'deploy'
+          connectionType: 'azureResourceManager'
+          azureSubscriptionConnection: 'AzureSC'
+          azureResourceGroup: 'aks'
+          kubernetesCluster: 'aks-demo-cluster'
+          useClusterAdmin: true
+          namespace: 'qa'
+          strategy: 'canary'
+          percentage: '50'
+          manifests: '$(deploymentPath)'
