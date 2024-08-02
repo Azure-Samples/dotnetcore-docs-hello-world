@@ -68,7 +68,7 @@ stages:
       - task: KubernetesManifest@1
         displayName: 'Deploy to AKS using Canary Strategy'
         inputs:
-          action: 'Deploy'
+          action: 'deploy'
           connectionType: 'azureResourceManager'
           azureSubscriptionConnection: 'AzureSC'
           azureResourceGroup: 'aks'
