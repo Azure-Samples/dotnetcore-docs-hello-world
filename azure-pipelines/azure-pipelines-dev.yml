@@ -1,0 +1,50 @@
+jobs:
+  - job: BuildJob
+    steps:
+      - task: Docker@2
+        displayName: 'Docker Build'
+        inputs:
+          containerRegistry: 'DockerSC'
+          repository: 'advikbalan2709/helloworld'
+          command: 'build'
+          Dockerfile: '**/Dockerfile.linux'
+          tags: |
+            $(Build.BuildId)
+
+      - task: Docker@2
+        displayName: 'Docker Push'
+        inputs:
+          containerRegistry: 'DockerSC'
+          repository: 'advikbalan2709/helloworld'
+          command: 'push'
+          tags: |
+            $(Build.BuildId)
+
+  - job: DeployJob
+    dependsOn: BuildJob
+    displayName: 'Deploy to AKS'
+    variables:
+      BUILD_ID: $(Build.BuildId)  # Pass the build ID as a variable
+      deploymentPath: '/manifests/dev/deployments.yaml'
+    steps:
+      - task: Bash@3
+        displayName: 'Update Deployment Manifest with Build ID'
+        inputs:
+          targetType: 'inline'
+          script: |
+            sed -i 's/BUILD_ID_PLACEHOLDER/$(BUILD_ID)/g' $(deploymentPath)
+
+      - task: KubernetesManifest@1
+        displayName: 'Deploy to AKS using Canary Strategy'
+        inputs:
+          action: 'deploy'
+          connectionType: 'azureResourceManager'
+          azureSubscriptionConnection: 'AzureSC'
+          azureResourceGroup: 'aks'
+          kubernetesCluster: 'aks-demo-cluster'
+          useClusterAdmin: true
+          namespace: 'dev'
+          strategy: 'canary'
+          percentage: '50'
+          manifests: '/manifests/dev/*.yaml'
+      
