@@ -86,9 +86,9 @@ stages:
           connectionType: 'azureResourceManager'
           azureSubscriptionConnection: 'AzureSC'
           azureResourceGroup: 'aks'
-          kubernetesCluster: 'aks-demo-cluster'
+          kubernetesCluster: 'aks-prod'
           useClusterAdmin: true
-          namespace: 'qa'
+          namespace: 'prod'
           strategy: 'canary'
           percentage: '50'
           manifests: '$(deploymentPath)'
