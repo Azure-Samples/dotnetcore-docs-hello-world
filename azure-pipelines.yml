@@ -50,15 +50,31 @@ stages:
           script: |
             sed -i 's/BUILD_ID_PLACEHOLDER/$(BUILD_ID)/g' $(deploymentPath)
 
+#      - task: KubernetesManifest@1
+#        displayName: 'Deploy to AKS using Canary Strategy'
+#        inputs:
+#          action: 'deploy'
+#          connectionType: 'kubernetesServiceConnection'
+#          kubernetesServiceConnection: 'AzureAKSSC-dev'
+#          azureResourceGroup: 'aks'
+#          kubernetesCluster: 'aks-demo-cluster'
+#          namespace: 'dev'
+#          strategy: 'canary'
+#          percentage: '50'
+#          manifests: $(deploymentPath)
+
+      
+
       - task: KubernetesManifest@1
         displayName: 'Deploy to AKS using Canary Strategy'
         inputs:
-          action: 'deploy'
-          connectionType: 'kubernetesServiceConnection'
-          kubernetesServiceConnection: 'AzureAKSSC-dev'
-#          azureResourceGroup: 'aks'
-#          kubernetesCluster: 'aks-demo-cluster'
+          action: 'Deploy'
+          connectionType: 'azureResourceManager'
+          azureSubscriptionConnection: 'AzureSC'
+          azureResourceGroup: 'aks'
+          kubernetesCluster: 'aks-demo-cluster'
+          useClusterAdmin: true
           namespace: 'dev'
           strategy: 'canary'
           percentage: '50'
-          manifests: $(deploymentPath)
+          manifests: '$(deploymentPath)'
