@@ -4,6 +4,10 @@ on:
   repository_dispatch:
     types: [deploy-dotnet-app]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
