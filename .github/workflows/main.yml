@@ -1,41 +1,16 @@
-name: Deploy on Dispatch Trigger
+name: Print the first value of an array secret
 
-on:
-  repository_dispatch:
-    types: [deploy-dotnet-app]
-
-permissions:
-  id-token: write
-  contents: read
+on: workflow_run
 
 jobs:
-  build-and-deploy:
+  print-array:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Print the first value of the array
+        run: echo $(fromJSON(secrets.ENV_SECRETS)[0])
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '6.0.0'
+      - name: Print the array
+        run: echo $(fromJSON(secrets.ENV_SECRETS))
 
-    - name: Build
-      run: dotnet build
-
-    - name: Publish
-      run: dotnet publish -c Release -o ./publish
-
-    - name: Azure Login (OIDC)
-      uses: azure/login@v1
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: azuregoat-ibr-webapp
-        package: ./publish
+      - name: Print the first value of the array classic
+        run: echo "${secrets.ENV_SECRETS}"
