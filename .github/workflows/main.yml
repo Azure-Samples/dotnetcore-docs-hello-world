@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print the raw secret
-        run: echo "1st method/${{ secrets.ENV_SECRETS }}"
+        run: echo "1st Array/${{ secrets.ENV_SECRETS }}"
 
-      - name: Save secret to file
-        run: echo '2nd method/${{ secrets.ENV_SECRETS }}' > secret.json
+      - name: Print the raw secret
+        run: echo "2nd Array with Value/${{ secrets.ENV_SECRETS_ARRAY }}"
