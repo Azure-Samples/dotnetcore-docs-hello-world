@@ -1,16 +1,24 @@
-name: Print the first value of an array secret
+name: Print Secrets Array
 
-on: workflow_run
+on: 
+  push:
 
 jobs:
   print-array:
     runs-on: ubuntu-latest
     steps:
-      - name: Print the first value of the array
-        run: echo $(fromJSON(secrets.ENV_SECRETS)[0])
+      - name: Print the raw secret
+        run: echo "${{ secrets.ENV_SECRETS }}"
 
-      - name: Print the array
-        run: echo $(fromJSON(secrets.ENV_SECRETS))
+      - name: Save secret to file
+        run: echo '${{ secrets.ENV_SECRETS }}' > secret.json
 
-      - name: Print the first value of the array classic
-        run: echo "${secrets.ENV_SECRETS}"
+      - name: Print first value using jq
+        run: |
+          apt-get update && apt-get install -y jq
+          first=$(jq -r '.[0]' secret.json)
+          echo "First value: $first"
+
+      - name: Print full array with jq
+        run: |
+          jq '.' secret.json
