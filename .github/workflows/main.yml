@@ -83,5 +83,5 @@ jobs:
           az webapp deployment source config-zip \
             --name ${{ env.APP_NAME }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
-            --src-path ./release.zip
+            --src ./release.zip
             
