@@ -84,4 +84,5 @@ jobs:
             --name ${{ env.APP_NAME }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --src-path ./release.zip \
-            --track-status false
+            --track-status false --enable-kudu-warmup false
+            
