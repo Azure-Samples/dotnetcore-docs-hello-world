@@ -80,9 +80,8 @@ jobs:
 
       - name: Deploy .NET App using App Registration identity
         run: |
-          az webapp deploy \
+          az webapp deployment source config-zip \
             --name ${{ env.APP_NAME }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
-            --src-path ./release.zip \
-            --track-status false --enable-kudu-warmup false
+            --src-path ./release.zip
             
