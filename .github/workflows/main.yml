@@ -76,8 +76,15 @@ jobs:
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
           enable-oidc: true
 
+      - name: Get App Service Resource Group
+        id: rg
+        run: |
+          RG=$(az webapp show --name ${{ env.APP_NAME }} --query resourceGroup -o tsv)
+          echo "RESOURCE_GROUP=$RG" >> $GITHUB_ENV
+
       - name: Deploy .NET App using App Registration identity
         run: |
           az webapp deploy \
             --name ${{ env.APP_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
             --src-path ./publish.zip
