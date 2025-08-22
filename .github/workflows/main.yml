@@ -6,8 +6,8 @@ on:
       - main
 
 permissions:
-  id-token: write
-  contents: read
+  id-token: write       # required for OIDC
+  contents: read        # required for checkout
 
 jobs:
   build-and-deploy:
@@ -20,17 +20,18 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0   # change according to your app
+        dotnet-version: '8.0.x'   # use LTS or version matching your app
 
     - name: Restore dependencies
       run: dotnet restore
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
-    
-    - name: Zip published output
-      run: zip -r publish.zip ./publish
 
+    - name: Publish
+      run: dotnet publish --configuration Release --output ./publish
+
+    # ✅ Login using OIDC (no secret needed except IDs)
     - name: Login to Azure using OIDC
       uses: azure/login@v2
       with:
@@ -39,8 +40,9 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-oidc: true
 
+    # ✅ Deploy using OIDC
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v2
       with:
-        app-name: test-dev-scus-web   # your App Service name
-        package: ./publish.zip
+        app-name: test-dev-scus-web
+        package: ./publish
