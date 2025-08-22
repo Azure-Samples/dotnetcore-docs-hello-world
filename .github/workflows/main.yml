@@ -83,4 +83,4 @@ jobs:
           az webapp deploy \
             --name ${{ env.APP_NAME }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
-            --src-path ./publish.zip
+            --src-path ./release.zip
