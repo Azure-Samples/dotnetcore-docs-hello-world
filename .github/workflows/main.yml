@@ -1,8 +1,9 @@
-name: Deploy on Dispatch Trigger
+name: Deploy .NET Core App to Azure App Service (OIDC)
 
 on:
-  repository_dispatch:
-    types: [deploy-dotnet-app]
+  push:
+    branches:
+      - main
 
 permissions:
   id-token: write
@@ -13,29 +14,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '6.0.0'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.0'
 
-    - name: Build
-      run: dotnet build
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Publish
-      run: dotnet publish -c Release -o ./publish
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-    - name: Azure Login (OIDC)
-      uses: azure/login@v1
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Publish
+        run: dotnet publish --configuration Release --output ./publish
 
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v3
-      with:
-        app-name: dotnetcore-webapp
-        package: ./publish
+      - name: Login to Azure using OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-oidc: true
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: test-dev-scus-web        # talosWebApp.name
+          package: ./publish
