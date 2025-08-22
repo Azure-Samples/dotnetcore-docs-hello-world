@@ -78,10 +78,11 @@ jobs:
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
           enable-oidc: true
 
-      - name: Deploy .NET App using App Registration identity
+      - name: Deploy .NET App without SCM
         run: |
-          az webapp deployment source config-zip \
+          az webapp deploy \
             --name ${{ env.APP_NAME }} \
             --resource-group ${{ env.RESOURCE_GROUP }} \
-            --src ./release.zip
+            --src-path release.zip \
+            --type zip
             
