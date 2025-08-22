@@ -1,48 +1,44 @@
-name: Deploy to Azure App Service (OIDC)
+name: Deploy to Azure Container Apps (ACA)
 
 on:
   push:
-    branches:
-      - main
-
-permissions:
-  id-token: write       # required for OIDC
-  contents: read        # required for checkout
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0'   # use LTS or version matching your app
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Set up variables
+        run: |
+          echo "RESOURCE_GROUP=test-dev-scus-rg" >> $GITHUB_ENV
+          echo "ACR_NAME=testDevScusAcr" >> $GITHUB_ENV
+          echo "ACA_NAME=test-dev-scus-aca" >> $GITHUB_ENV
+          echo "IMAGE=$ACR_NAME.azurecr.io/hello-world-app:${GITHUB_SHA::8}" >> $GITHUB_ENV
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+      - name: ACR Login
+        run: az acr login --name ${{ env.ACR_NAME }}
 
-    - name: Publish
-      run: dotnet publish --configuration Release --output ./publish
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t $IMAGE .
+          docker push $IMAGE
 
-    # ✅ Login using OIDC (no secret needed except IDs)
-    - name: Login to Azure using OIDC
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        enable-oidc: true
-
-    # ✅ Deploy using OIDC
-    - name: Deploy to Azure App Service
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: test-dev-scus-web
-        package: ./publish
+      - name: Deploy to Azure Container Apps
+        run: |
+          az containerapp update \
+            --name ${{ env.ACA_NAME }} \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --image $IMAGE \
+            --ingress external \
+            --target-port 80
