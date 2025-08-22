@@ -8,7 +8,7 @@ on:
 permissions:
   id-token: write       # required for OIDC
   contents: read    
-  
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -23,13 +23,6 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-oidc: true
-
-      - name: Set up variables
-        run: |
-          echo "RESOURCE_GROUP=test-dev-scus-rg" >> $GITHUB_ENV
-          echo "ACR_NAME=testDevScusAcr" >> $GITHUB_ENV
-          echo "ACA_NAME=test-dev-scus-aca" >> $GITHUB_ENV
-          echo "IMAGE=.azurecr.io/hello-world-app:${GITHUB_SHA::8}" >> $GITHUB_ENV
 
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v1
