@@ -28,7 +28,7 @@ jobs:
           echo "RESOURCE_GROUP=test-dev-scus-rg" >> $GITHUB_ENV
           echo "ACR_NAME=testDevScusAcr" >> $GITHUB_ENV
           echo "ACA_NAME=test-dev-scus-aca" >> $GITHUB_ENV
-          echo "IMAGE=$ACR_NAME.azurecr.io/hello-world-app:${GITHUB_SHA::8}" >> $GITHUB_ENV
+          echo "IMAGE=testDevScusAcr.azurecr.io/hello-world-app:${GITHUB_SHA::8}" >> $GITHUB_ENV
 
       - name: ACR Login
         run: az acr login --name ${{ env.ACR_NAME }}
