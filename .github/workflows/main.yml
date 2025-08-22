@@ -32,7 +32,7 @@ jobs:
       - name: Set up .NET SDK
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.414'  # Exact SDK for the Hello World app
+          dotnet-version: '8.0'  # Exact SDK for the Hello World app
 
       - name: Restore dependencies
         run: dotnet restore
