@@ -27,9 +27,9 @@ jobs:
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
-
-    - name: Publish
-      run: dotnet publish --configuration Release --output ./publish
+    
+    - name: Zip published output
+      run: zip -r publish.zip ./publish
 
     - name: Login to Azure using OIDC
       uses: azure/login@v2
@@ -43,5 +43,4 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: test-dev-scus-web   # your App Service name
-        package: ./publish
-        publish-profile: ''             # leave blank since using OIDC
+        package: ./publish.zip
