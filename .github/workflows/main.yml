@@ -76,9 +76,8 @@ jobs:
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
           enable-oidc: true
 
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ env.APP_NAME }}
-          package: ./publish
+      - name: Deploy .NET App using App Registration identity
+        run: |
+          az webapp deploy \
+            --name ${{ env.APP_NAME }} \
+            --src-path ./publish.zip
