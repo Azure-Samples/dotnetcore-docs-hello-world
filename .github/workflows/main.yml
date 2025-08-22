@@ -15,8 +15,6 @@ env:
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   APP_NAME: test-dev-scus-web
-  RESOURCE_GROUP: test-dev-scus-rg
-
 
 permissions:
   id-token: write
@@ -76,13 +74,10 @@ jobs:
           client-id: ${{ env.AZURE_CLIENT_ID }}
           tenant-id: ${{ env.AZURE_TENANT_ID }}
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-          enable-oidc: true
 
-      - name: Deploy .NET App without SCM
-        run: |
-          az webapp deploy \
-            --name ${{ env.APP_NAME }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --src-path release.zip \
-            --type zip
-            
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.APP_NAME }}
+          package: ./publish
