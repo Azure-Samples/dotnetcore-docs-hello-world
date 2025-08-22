@@ -16,33 +16,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Log in to Azure
+      - name: Login to Azure using OIDC
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-oidc: true
 
       - name: Set up variables
         run: |
           echo "RESOURCE_GROUP=test-dev-scus-rg" >> $GITHUB_ENV
           echo "ACR_NAME=testDevScusAcr" >> $GITHUB_ENV
           echo "ACA_NAME=test-dev-scus-aca" >> $GITHUB_ENV
-          echo "IMAGE=testDevScusAcr.azurecr.io/hello-world-app:${GITHUB_SHA::8}" >> $GITHUB_ENV
+          echo "IMAGE=.azurecr.io/hello-world-app:${GITHUB_SHA::8}" >> $GITHUB_ENV
 
-      - name: ACR Login
-        run: az acr login --name ${{ env.ACR_NAME }}
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t $IMAGE .
-          docker push $IMAGE
-
-      - name: Deploy to Azure Container Apps
-        run: |
-          az containerapp update \
-            --name ${{ env.ACA_NAME }} \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --image $IMAGE \
-            --ingress external \
-            --target-port 80
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }}/
+          acrName: testDevScusAcr
+          containerAppName: test-dev-scus-aca
+          resourceGroup: test-dev-scus-rg
