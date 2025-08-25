@@ -45,5 +45,5 @@ jobs:
           az containerapp update \
             --name $ACA_NAME \
             --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:latest --debug
+            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:sha256:e2020003769184ea4ec49864e0fcdf7144e66ba177cec3218673415b0c420bb1 --debug
 
