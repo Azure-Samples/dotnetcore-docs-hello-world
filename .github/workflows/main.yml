@@ -30,19 +30,19 @@ jobs:
           RESOURCE_GROUP="test-dev-scus-rg"
           ACA_NAME="test-dev-scus-aca"
           ACR_NAME="testdevscusacr"
-          IMAGE="${ACR_NAME}.azurecr.io/hello-world-app:${GITHUB_SHA}"
+          IMAGE_SHA="${ACR_NAME}.azurecr.io/hello-world-app:${GITHUB_SHA}"
+          IMAGE_LATEST="${ACR_NAME}.azurecr.io/hello-world-app:latest"
 
-          echo "Building image: $IMAGE"
+          echo "Building and pushing images: $IMAGE_SHA and $IMAGE_LATEST"
 
-          # Log in to ACR
           az acr login --name $ACR_NAME
 
-          # Build & push the Docker image (using Linux Dockerfile)
-          docker build -t $IMAGE -f Dockerfile.linux .
-          docker push $IMAGE
+          docker build -t $IMAGE_SHA -t $IMAGE_LATEST -f Dockerfile.linux .
+          docker push $IMAGE_SHA
+          docker push $IMAGE_LATEST
 
-          # Deploy to ACA (update image)
+          # Deploy using stable tag
           az containerapp update \
             --name $ACA_NAME \
             --resource-group $RESOURCE_GROUP \
-            --image $IMAGE --debug
+            --image $IMAGE_LATEST --debug
