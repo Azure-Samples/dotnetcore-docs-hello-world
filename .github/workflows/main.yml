@@ -38,7 +38,7 @@ jobs:
           az acr build \
             --registry $ACR_NAME \
             --image $IMAGE_NAME:latest \
-            --resource-group $RESOURCE_GROUP --file \
+            --resource-group $RESOURCE_GROUP \
             --file Dockerfile.linux \
             .
       
