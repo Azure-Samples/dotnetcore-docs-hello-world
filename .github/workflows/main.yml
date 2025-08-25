@@ -6,12 +6,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write       # required for OIDC
-  contents: read    
+  id-token: write   # required for OIDC
+  contents: read
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -24,10 +25,28 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-oidc: true
 
-      - name: Build and deploy Container App
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          appSourcePath: ${{ github.workspace }}/
-          acrName: testDevScusAcr
-          containerAppName: test-dev-scus-aca
-          resourceGroup: test-dev-scus-rg
+      - name: Azure CLI - Deploy to ACA
+        run: |
+          # Variables
+          RESOURCE_GROUP="test-dev-scus-rg"
+          ACA_NAME="test-dev-scus-aca"
+          ACR_NAME="testDevScusAcr"
+          IMAGE="${ACR_NAME}.azurecr.io/hello-world-app:${GITHUB_SHA}"
+
+          echo "Building image: $IMAGE"
+
+          # Build & push image to ACR
+          az acr build \
+            --registry $ACR_NAME \
+            --image $IMAGE \
+            .
+
+          # Create Container App if not exists
+          az containerapp create \
+            --name $ACA_NAME \
+            --resource-group $RESOURCE_GROUP \
+            --environment test-dev-scus-cae \
+            --image $IMAGE \
+            --target-port 80 \
+            --ingress external \
+            --query properties.configuration.ingress.fqdn
