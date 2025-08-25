@@ -13,6 +13,11 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      RESOURCE_GROUP: test-dev-scus-rg
+      ACA_NAME: test-dev-scus-aca
+      ACR_NAME: testdevscusacr
+      IMAGE_LATEST: testdevscusacr.azurecr.io/hello-world-app:latest
 
     steps:
       - name: Checkout repository
@@ -27,25 +32,15 @@ jobs:
 
       - name: Build and Push Docker image to ACR
         run: |
-          RESOURCE_GROUP="test-dev-scus-rg"
-          ACA_NAME="test-dev-scus-aca"
-          ACR_NAME="testdevscusacr"
-          IMAGE_SHA="${ACR_NAME}.azurecr.io/hello-world-app:${GITHUB_SHA}"
-          IMAGE_LATEST="${ACR_NAME}.azurecr.io/hello-world-app:latest"
-
-          echo "Building and pushing images: $IMAGE_SHA and $IMAGE_LATEST"
-
+          echo "Building and pushing image: $IMAGE_LATEST"
           az acr login --name $ACR_NAME
-
-          #docker build -t $IMAGE_SHA -t $IMAGE_LATEST -f Dockerfile.linux .
-          #docker push $IMAGE_SHA
           docker build -t $IMAGE_LATEST -f Dockerfile.linux .
           docker push $IMAGE_LATEST
 
       - name: Deploy in ACA
-        run: | 
-          # Deploy using stable tag
+        run: |
           az containerapp update \
             --name $ACA_NAME \
             --resource-group $RESOURCE_GROUP \
             --image $IMAGE_LATEST --debug
+
