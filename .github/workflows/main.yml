@@ -39,6 +39,7 @@ jobs:
           az acr build \
             --registry $ACR_NAME \
             --image $IMAGE \
+            --file Dockerfile.linux \
             .
 
           # Create Container App if not exists
