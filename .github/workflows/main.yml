@@ -45,4 +45,4 @@ jobs:
           az containerapp update \
             --name $ACA_NAME \
             --resource-group $RESOURCE_GROUP \
-            --image $IMAGE
+            --image $IMAGE --debug
