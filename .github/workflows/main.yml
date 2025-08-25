@@ -30,7 +30,7 @@ jobs:
           RESOURCE_GROUP="test-dev-scus-rg"
           ACA_NAME="test-dev-scus-aca"
           ACR_NAME="testdevscusacr"
-          IMAGE="${ACR_NAME}.azurecr.io/hello-world-app:${github.sha}"
+          IMAGE="${ACR_NAME}.azurecr.io/hello-world-app:${GITHUB_SHA}"
 
           echo "Building image: $IMAGE"
 
@@ -45,4 +45,4 @@ jobs:
           az containerapp update \
             --name $ACA_NAME \
             --resource-group $RESOURCE_GROUP \
-            --image $IMAGE
+            --image $IMAGE --debug
