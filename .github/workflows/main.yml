@@ -30,6 +30,14 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Set ACR on ACA
+        run: |
+          az containerapp registry set \                                                                      
+          --name test-dev-scus-aca \
+          --resource-group test-dev-scus-rg \
+          --server testdevscusacr.azurecr.io \                  
+          --identity system
+
       - name: Build and Push Docker image to ACR
         run: |
           echo "Building and pushing image: $IMAGE_LATEST"
