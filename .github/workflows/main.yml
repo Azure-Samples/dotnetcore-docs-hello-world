@@ -37,18 +37,10 @@ jobs:
 
           az acr login --name $ACR_NAME
 
-          docker build -t $IMAGE_SHA -t $IMAGE_LATEST -f Dockerfile.linux .
-          docker push $IMAGE_SHA
+          #docker build -t $IMAGE_SHA -t $IMAGE_LATEST -f Dockerfile.linux .
+          #docker push $IMAGE_SHA
+          docker build -t $IMAGE_LATEST -f Dockerfile.linux .
           docker push $IMAGE_LATEST
-          
-          # Log in to ACR
-          az acr login --name testdevscusacr
-
-          # Build image and tag it
-          docker build -t testdevscusacr.azurecr.io/hello-world-app:latest .
-
-          # Push image
-          docker push testdevscusacr.azurecr.io/hello-world-app:latest
 
       - name: Deploy in ACA
         run: | 
