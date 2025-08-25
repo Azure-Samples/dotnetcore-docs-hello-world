@@ -38,7 +38,8 @@ jobs:
           az acr build \
             --registry $ACR_NAME \
             --image $IMAGE_NAME:latest \
-            --resource-group $RESOURCE_GROUP \
+            --resource-group $RESOURCE_GROUP --file \
+            --file Dockerfile.linux \
             .
       
       - name: Update Azure Container App
