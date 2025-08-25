@@ -29,7 +29,7 @@ jobs:
         run: |
           RESOURCE_GROUP="test-dev-scus-rg"
           ACA_NAME="test-dev-scus-aca"
-          ACR_NAME="testDevScusAcr"
+          ACR_NAME="testdevscusacr"
           IMAGE="${ACR_NAME}.azurecr.io/hello-world-app:${GITHUB_SHA}"
 
           echo "Building image: $IMAGE"
