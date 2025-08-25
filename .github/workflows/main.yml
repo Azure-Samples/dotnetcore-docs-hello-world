@@ -16,7 +16,9 @@ jobs:
     env:
       RESOURCE_GROUP: test-dev-scus-rg
       ACA_NAME: test-dev-scus-aca
-      ACR_NAME: testdevscusacr
+      ACR_NAME: testDevScusAcr
+      ACR_LOGIN: testdevscusacr
+      IMAGE_NAME: hello-world-app
       IMAGE_LATEST: testdevscusacr.azurecr.io/hello-world-app:latest
 
     steps:
@@ -32,15 +34,30 @@ jobs:
 
       - name: Build and Push Docker image to ACR
         run: |
-          echo "Building and pushing image: $IMAGE_LATEST"
-          az acr login --name $ACR_NAME
-          docker build -t $IMAGE_LATEST -f Dockerfile.linux .
-          docker push $IMAGE_LATEST
-
-      - name: Deploy in ACA
+          echo "Building and pushing image to ACR..."
+          az acr build \
+            --registry $ACR_NAME \
+            --image $IMAGE_NAME:latest \
+            --resource-group $RESOURCE_GROUP \
+            .
+      
+      - name: Update Azure Container App
         run: |
+          echo "Updating ACA with new image..."
           az containerapp update \
             --name $ACA_NAME \
             --resource-group $RESOURCE_GROUP \
-            --image $IMAGE_LATEST --debug
+            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:latest
+
+        #run: |
+        #  echo "Building and pushing image: $IMAGE_LATEST"
+        #  az acr login --name $ACR_NAME
+        #  docker build -t $IMAGE_LATEST -f Dockerfile.linux .
+        #  docker push $IMAGE_LATEST
+      #- name: Deploy in ACA
+      #  run: |
+      #    az containerapp update \
+      #      --name $ACA_NAME \
+      #      --resource-group $RESOURCE_GROUP \
+      #      --image $IMAGE_LATEST --debug
 
