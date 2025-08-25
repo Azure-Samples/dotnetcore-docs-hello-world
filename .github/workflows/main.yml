@@ -34,13 +34,10 @@ jobs:
 
       - name: Build and Push Docker image to ACR
         run: |
-          echo "Building and pushing image to ACR..."
-          az acr build \
-            --registry $ACR_NAME \
-            --image $IMAGE_NAME:latest \
-            --resource-group $RESOURCE_GROUP \
-            --file Dockerfile.linux \
-            .
+          echo "Building and pushing image: $IMAGE_LATEST"
+          az acr login --name $ACR_NAME
+          docker build -t $IMAGE_LATEST -f Dockerfile.linux .
+          docker push $IMAGE_LATEST
       
       - name: Update Azure Container App
         run: |
@@ -48,17 +45,5 @@ jobs:
           az containerapp update \
             --name $ACA_NAME \
             --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:latest
-
-        #run: |
-        #  echo "Building and pushing image: $IMAGE_LATEST"
-        #  az acr login --name $ACR_NAME
-        #  docker build -t $IMAGE_LATEST -f Dockerfile.linux .
-        #  docker push $IMAGE_LATEST
-      #- name: Deploy in ACA
-      #  run: |
-      #    az containerapp update \
-      #      --name $ACA_NAME \
-      #      --resource-group $RESOURCE_GROUP \
-      #      --image $IMAGE_LATEST --debug
+            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:latest --debug
 
