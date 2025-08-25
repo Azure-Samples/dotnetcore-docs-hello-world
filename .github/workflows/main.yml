@@ -1,12 +1,13 @@
-name: Deploy to Azure Container Apps (ACA)
+name: Build and Deploy to ACA
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
-  id-token: write   # required for OIDC
+  id-token: write     # for OIDC
   contents: read
 
 jobs:
@@ -14,20 +15,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Login to Azure using OIDC
-        uses: azure/login@v2
+      - name: Azure login with OIDC
+        uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          enable-oidc: true
 
-      - name: Azure CLI - Deploy to ACA
+      - name: Build and Push Docker image to ACR
         run: |
-          # Variables
           RESOURCE_GROUP="test-dev-scus-rg"
           ACA_NAME="test-dev-scus-aca"
           ACR_NAME="testDevScusAcr"
@@ -35,24 +34,14 @@ jobs:
 
           echo "Building image: $IMAGE"
 
-          # Build & push image to ACR
-          az acr build \
-            --registry $ACR_NAME \
-            --image $IMAGE \
-            --file Dockerfile.linux \
-            .
+          # Log in to ACR
+          az acr login --name $ACR_NAME
 
-          # Create Container App if not exists
-          #az containerapp create \
-          #  --name $ACA_NAME \
-          #  --resource-group $RESOURCE_GROUP \
-          #  --environment test-dev-scus-cae \
-          #  --image $IMAGE \
-          #  --target-port 80 \
-          #  --ingress external \
-          #  --query properties.configuration.ingress.fqdn
+          # Build & push the Docker image (using Linux Dockerfile)
+          docker build -t $IMAGE -f Dockerfile.linux .
+          docker push $IMAGE
 
-          # Or update if already exists
+          # Deploy to ACA (update image)
           az containerapp update \
             --name $ACA_NAME \
             --resource-group $RESOURCE_GROUP \
