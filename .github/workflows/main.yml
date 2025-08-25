@@ -37,9 +37,12 @@ jobs:
           # Log in to ACR
           az acr login --name $ACR_NAME
 
-          # Build & push the Docker image (using Linux Dockerfile)
-          docker build -t $IMAGE -f Dockerfile.linux .
-          docker push $IMAGE
+          IMAGE=testdevscusacr.azurecr.io/hello-world-app
+          docker build -t $IMAGE:latest -t $IMAGE:${GITHUB_SHA} .
+          az acr login --name testdevscusacr
+          docker push $IMAGE:latest
+          docker push $IMAGE:${GITHUB_SHA}
+
 
           # Deploy to ACA (update image)
           az containerapp update \
