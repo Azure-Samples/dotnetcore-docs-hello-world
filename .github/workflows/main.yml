@@ -6,6 +6,39 @@ on:
   workflow_dispatch:
 
 permissions:
+  id-token: write       # required for OIDC
+  contents: read    
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Azure using OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          enable-oidc: true
+
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }}/
+          acrName: testDevScusAcr
+          containerAppName: test-dev-scus-aca
+          resourceGroup: test-dev-scus-rg
+name: Deploy to Azure Container Apps (ACA)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
   id-token: write   # required for OIDC
   contents: read
 
@@ -42,11 +75,17 @@ jobs:
             .
 
           # Create Container App if not exists
-          az containerapp create \
+          #az containerapp create \
+          #  --name $ACA_NAME \
+          #  --resource-group $RESOURCE_GROUP \
+          #  --environment test-dev-scus-env \
+          #  --image $IMAGE \
+          #  --target-port 80 \
+          #  --ingress external \
+          #  --query properties.configuration.ingress.fqdn
+
+          # Or update if already exists
+          az containerapp update \
             --name $ACA_NAME \
             --resource-group $RESOURCE_GROUP \
-            --environment test-dev-scus-cae \
-            --image $IMAGE \
-            --target-port 80 \
-            --ingress external \
-            --query properties.configuration.ingress.fqdn
+            --image $IMAGE
