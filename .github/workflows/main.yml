@@ -43,19 +43,26 @@ jobs:
           tenant-id: ${{ env.AZURE_TENANT_ID }}
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Log in to Azure Container Registry & Build and Push Docker Image
+      #- name: Log in to Azure Container Registry & Build and Push Docker Image
+      #  run: |
+      #    az acr login --name ${{ env.ACR_NAME }}
+      #    IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
+      #    docker build -t $IMAGE_NAME -f Dockerfile.linux .
+      #    docker push $IMAGE_NAME
+      
+      - name: Build and Push Docker image to ACR
         run: |
+          echo "Building and pushing image: $IMAGE_LATEST"
           az acr login --name ${{ env.ACR_NAME }}
-          IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
-          docker build -t $IMAGE_NAME -f Dockerfile.linux .
-          docker push $IMAGE_NAME
+          docker build -t  -f Dockerfile.linux .
+          docker push ${{ env.IMAGE_LATEST }}
 
       - name: Deploy to Azure Container Apps Test1
         uses: azure/container-apps-deploy-action@v1
         with:
           containerAppName: ${{ env.CONTAINER_APP_NAME1 }}
           resourceGroup: ${{ env.RESOURCE_GROUP }}
-          imageToDeploy: ${{ env.ACR_NAME }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
+          imageToDeploy: ${{ env.IMAGE_LATEST}}
           containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME }}
 
       - name: Deploy to Azure Container Apps Test2
@@ -63,5 +70,5 @@ jobs:
         with:
           containerAppName: ${{ env.CONTAINER_APP_NAME2 }}
           resourceGroup: ${{ env.RESOURCE_GROUP }}
-          imageToDeploy: ${{ env.ACR_NAME }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
+          imageToDeploy: ${{ env.IMAGE_LATEST}}
           containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME }}
