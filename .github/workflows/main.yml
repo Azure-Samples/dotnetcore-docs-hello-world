@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RESOURCE_GROUP: test-dev-scus-rg
-      ACA_NAME: test-dev-scus-aca
+      ACA_NAME1: test1-dev-scus-aca
+      ACA_NAME2: test2-dev-scus-aca
       ACR_NAME: testDevScusAcr
       ACR_LOGIN: testdevscusacr
       IMAGE_NAME: hello-world-app
@@ -39,11 +40,19 @@ jobs:
           docker build -t $IMAGE_LATEST -f Dockerfile.linux .
           docker push $IMAGE_LATEST
       
-      - name: Update Azure Container App
+      - name: Update Azure Test1 Container App
         run: |
           echo "Updating ACA with new image..."
           az containerapp update \
-            --name $ACA_NAME \
+            --name $ACA_NAME1 \
             --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:latest --debug
+            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:latest
+      
+      - name: Update Azure Test2 Container App
+        run: |
+          echo "Updating ACA with new image..."
+          az containerapp update \
+            --name $ACA_NAME2 \
+            --resource-group $RESOURCE_GROUP \
+            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:latest
 
