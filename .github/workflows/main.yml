@@ -43,12 +43,9 @@ jobs:
           tenant-id: ${{ env.AZURE_TENANT_ID }}
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Log in to Azure Container Registry
+      - name: Log in to Azure Container Registry & Build and Push Docker Image
         run: |
           az acr login --name ${{ env.ACR_NAME }}
-
-      - name: Build and Push Docker Image
-        run: |
           IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
           docker build -t $IMAGE_NAME -f Dockerfile.linux .
           docker push $IMAGE_NAME
