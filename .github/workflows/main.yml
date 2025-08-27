@@ -1,58 +1,66 @@
-name: Build and Deploy to ACA
+name: Deploy to ACA (dev)
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
-permissions:
-  id-token: write     # for OIDC
-  contents: read
-
+env:
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  RESOURCE_GROUP: test-dev-scus-rg
+  CONTAINER_APP_NAME1: test1-dev-scus-aca
+  CONTAINER_APP_NAME2: test2-dev-scus-aca
+  ACR_NAME: testDevScusAcr
+  ACR_LOGIN: testdevscusacr
+  IMAGE_NAME: hello-world-app
+  IMAGE_LATEST: testdevscusacr.azurecr.io/hello-world-app:latest
+  CONTAINER_APP_ENV_NAME: test-dev-scus-cae
+  
 jobs:
   build-and-deploy:
+    environment: dev
+
     runs-on: ubuntu-latest
-    env:
-      RESOURCE_GROUP: test-dev-scus-rg
-      ACA_NAME1: test1-dev-scus-aca
-      ACA_NAME2: test2-dev-scus-aca
-      ACR_NAME: testDevScusAcr
-      ACR_LOGIN: testdevscusacr
-      IMAGE_NAME: hello-world-app
-      IMAGE_LATEST: testdevscusacr.azurecr.io/hello-world-app:latest
+
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Azure login with OIDC
+      - name: Log in to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build and Push Docker image to ACR
+      - name: Log in to Azure Container Registry
         run: |
-          echo "Building and pushing image: $IMAGE_LATEST"
-          az acr login --name $ACR_NAME
-          docker build -t $IMAGE_LATEST -f Dockerfile.linux .
-          docker push $IMAGE_LATEST
-      
-      - name: Update Azure Test1 Container App
-        run: |
-          echo "Updating ACA with new image..."
-          az containerapp update \
-            --name $ACA_NAME1 \
-            --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:latest
-      
-      - name: Update Azure Test2 Container App
-        run: |
-          echo "Updating ACA with new image..."
-          az containerapp update \
-            --name $ACA_NAME2 \
-            --resource-group $RESOURCE_GROUP \
-            --image $ACR_LOGIN.azurecr.io/$IMAGE_NAME:latest
+          az acr login --name ${{ env.ACR_NAME }}
 
+      - name: Build and Push Docker Image
+        run: |
+          IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
+
+      - name: Deploy to Azure Container Apps Test1
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          containerAppName: ${{ env.CONTAINER_APP_NAME1 }}
+          resourceGroup: ${{ env.RESOURCE_GROUP }}
+          imageToDeploy: ${{ env.ACR_NAME }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
+          containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME }}
+
+      - name: Deploy to Azure Container Apps Test2
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          containerAppName: ${{ env.CONTAINER_APP_NAME2 }}
+          resourceGroup: ${{ env.RESOURCE_GROUP }}
+          imageToDeploy: ${{ env.ACR_NAME }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
+          containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME }}
