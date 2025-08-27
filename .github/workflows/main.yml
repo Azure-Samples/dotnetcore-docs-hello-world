@@ -46,7 +46,7 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
-          docker build -t $IMAGE_NAME -f src/Dockerfile src
+          docker build -t $IMAGE_NAME -f Dockerfile.linux .
           docker push $IMAGE_NAME
 
       - name: Deploy to Azure Container Apps Test1
