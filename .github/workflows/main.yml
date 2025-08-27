@@ -54,7 +54,7 @@ jobs:
         run: |
           echo "Building and pushing image: $IMAGE_LATEST"
           az acr login --name ${{ env.ACR_NAME }}
-          docker build -t  -f Dockerfile.linux .
+          docker build -t ${{ env.IMAGE_LATEST }} -f Dockerfile.linux .
           docker push ${{ env.IMAGE_LATEST }}
 
       - name: Deploy to Azure Container Apps Test1
