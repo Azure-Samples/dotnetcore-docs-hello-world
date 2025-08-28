@@ -17,10 +17,6 @@ env:
   CONTAINER_APP_NAME1: talos-dev-sea-aca
   CONTAINER_APP_ENV_NAME1: shared-dev-sea-cae
   
-  RESOURCE_GROUP2: valorianadmin-dev-sea-rg
-  CONTAINER_APP_NAME2: valorianadmin-dev-sea-aca
-  CONTAINER_APP_ENV_NAME2: truview-dev-sea-cae
-  
   ACR_NAME: sharedDevSeaAcr
   ACR_LOGIN: shareddevseaacr
   IMAGE_NAME: hello-world-app
@@ -61,11 +57,3 @@ jobs:
           resourceGroup: ${{ env.RESOURCE_GROUP1 }}
           imageToDeploy: ${{ env.ACR_LOGIN }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
           containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME1 }}
-
-      - name: Deploy to Azure Container Apps Test2
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          containerAppName: ${{ env.CONTAINER_APP_NAME2 }}
-          resourceGroup: ${{ env.RESOURCE_GROUP2 }}
-          imageToDeploy: ${{ env.ACR_LOGIN }}.azurecr.io/${{ env.CONTAINER_APP_NAME2 }}:${{ github.sha }}
-          containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME2 }}
