@@ -13,6 +13,7 @@ env:
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  WEB_APP_NAME:  talosi-dev-scus-web
 
 jobs:
   build-and-deploy:
@@ -50,4 +51,4 @@ jobs:
     - name: Deploy to Azure App Service
       uses: azure/webapps-deploy@v2
       with:
-        app-name: test-dev-scus-web
+        app-name: ${{ env.WEB_APP_NAME }}
