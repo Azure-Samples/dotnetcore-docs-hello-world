@@ -13,14 +13,18 @@ env:
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  RESOURCE_GROUP: test-dev-scus-rg
-  CONTAINER_APP_NAME1: test1-dev-scus-aca
-  CONTAINER_APP_NAME2: test2-dev-scus-aca
-  ACR_NAME: testDevScusAcr
-  ACR_LOGIN: testdevscusacr
+  RESOURCE_GROUP1: talos-dev-scus-rg
+  CONTAINER_APP_NAME1: talos-dev-scus-aca
+  CONTAINER_APP_ENV_NAME1: shared-dev-scus-cae
+  
+  RESOURCE_GROUP2: valorianadmin-dev-scus-rg
+  CONTAINER_APP_NAME2: valorianadmin-dev-scus-aca
+  CONTAINER_APP_ENV_NAME2: truview-dev-scus-cae
+  
+  ACR_NAME: sharedDevScusAcr
+  ACR_LOGIN: shareddevscusacr
   IMAGE_NAME: hello-world-app
-  IMAGE_LATEST: testdevscusacr.azurecr.io/hello-world-app:latest
-  CONTAINER_APP_ENV_NAME: test-dev-scus-cae
+  IMAGE_LATEST: shareddevscusacr.azurecr.io/hello-world-app:latest
 
 jobs:
   build-and-deploy:
@@ -54,14 +58,14 @@ jobs:
         uses: azure/container-apps-deploy-action@v1
         with:
           containerAppName: ${{ env.CONTAINER_APP_NAME1 }}
-          resourceGroup: ${{ env.RESOURCE_GROUP }}
+          resourceGroup: ${{ env.RESOURCE_GROUP1 }}
           imageToDeploy: ${{ env.ACR_LOGIN }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
-          containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME }}
+          containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME1 }}
 
       - name: Deploy to Azure Container Apps Test2
         uses: azure/container-apps-deploy-action@v1
         with:
           containerAppName: ${{ env.CONTAINER_APP_NAME2 }}
-          resourceGroup: ${{ env.RESOURCE_GROUP }}
-          imageToDeploy: ${{ env.ACR_LOGIN }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
-          containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME }}
+          resourceGroup: ${{ env.RESOURCE_GROUP2 }}
+          imageToDeploy: ${{ env.ACR_LOGIN }}.azurecr.io/${{ env.CONTAINER_APP_NAME2 }}:${{ github.sha }}
+          containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME2 }}
