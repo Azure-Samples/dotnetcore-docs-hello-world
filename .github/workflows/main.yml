@@ -13,18 +13,18 @@ env:
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  RESOURCE_GROUP1: talos-dev-scus-rg
-  CONTAINER_APP_NAME1: talos-dev-scus-aca
-  CONTAINER_APP_ENV_NAME1: shared-dev-scus-cae
+  RESOURCE_GROUP1: talos-dev-sea-rg
+  CONTAINER_APP_NAME1: talos-dev-sea-aca
+  CONTAINER_APP_ENV_NAME1: shared-dev-sea-cae
   
-  RESOURCE_GROUP2: valorianadmin-dev-scus-rg
-  CONTAINER_APP_NAME2: valorianadmin-dev-scus-aca
-  CONTAINER_APP_ENV_NAME2: truview-dev-scus-cae
+  RESOURCE_GROUP2: valorianadmin-dev-sea-rg
+  CONTAINER_APP_NAME2: valorianadmin-dev-sea-aca
+  CONTAINER_APP_ENV_NAME2: truview-dev-sea-cae
   
-  ACR_NAME: sharedDevScusAcr
-  ACR_LOGIN: shareddevscusacr
+  ACR_NAME: sharedDevSeaAcr
+  ACR_LOGIN: shareddevseaacr
   IMAGE_NAME: hello-world-app
-  IMAGE_LATEST: shareddevscusacr.azurecr.io/hello-world-app:latest
+  IMAGE_LATEST: shareddevseaacr.azurecr.io/hello-world-app:latest
 
 jobs:
   build-and-deploy:
