@@ -13,14 +13,14 @@ env:
   AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-  RESOURCE_GROUP1: talos-dev-sea-rg
-  CONTAINER_APP_NAME1: talos-dev-sea-aca
-  CONTAINER_APP_ENV_NAME1: shared-dev-sea-cae
+  RESOURCE_GROUP: test-dev-scus-rg
+  CONTAINER_APP_NAME: test1-dev-scus-aca
+  CONTAINER_APP_ENV_NAME: test-dev-scus-cae
   
-  ACR_NAME: sharedDevSeaAcr
-  ACR_LOGIN: shareddevseaacr
+  ACR_NAME: testDevScusAcr
+  ACR_LOGIN: testdevscusacr
   IMAGE_NAME: hello-world-app
-  IMAGE_LATEST: shareddevseaacr.azurecr.io/hello-world-app:latest
+  IMAGE_LATEST: testdevscusacr.azurecr.io/hello-world-app:latest
 
 jobs:
   build-and-deploy:
@@ -46,14 +46,14 @@ jobs:
       - name: Log in to Azure Container Registry & Build and Push Docker Image
         run: |
           az acr login --name ${{ env.ACR_NAME }}
-          IMAGE_NAME=${{ env.ACR_LOGIN }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
+          IMAGE_NAME=${{ env.ACR_LOGIN }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
           docker build -t $IMAGE_NAME -f Dockerfile.linux .
           docker push $IMAGE_NAME
 
       - name: Deploy to Azure Container Apps Test1
         uses: azure/container-apps-deploy-action@v1
         with:
-          containerAppName: ${{ env.CONTAINER_APP_NAME1 }}
-          resourceGroup: ${{ env.RESOURCE_GROUP1 }}
-          imageToDeploy: ${{ env.ACR_LOGIN }}.azurecr.io/${{ env.CONTAINER_APP_NAME1 }}:${{ github.sha }}
-          containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME1 }}
+          containerAppName: ${{ env.CONTAINER_APP_NAME }}
+          resourceGroup: ${{ env.RESOURCE_GROUP }}
+          imageToDeploy: ${{ env.ACR_LOGIN }}.azurecr.io/${{ env.CONTAINER_APP_NAME }}:${{ github.sha }}
+          containerAppEnvironment: ${{ env.CONTAINER_APP_ENV_NAME }}
